@@ -61,6 +61,7 @@ const StoreContextProvider = ({
   context,
   apiKey,
   apiUrl,
+  promoTilesDataPath,
   route,
   searchQuery,
 }: StoreDetailsProps) => {
@@ -76,8 +77,8 @@ const StoreContextProvider = ({
         customerGroup: context?.customerGroup ?? '',
         userViewHistory: context?.userViewHistory ?? [],
       },
-      promoTilesDataPath: '/drafts/kevin/promo-tiles.json',
       apiUrl: environmentType?.toLowerCase() === 'testing' ? TEST_URL : (apiUrl ? apiUrl : API_URL),
+      promoTilesDataPath,
       apiKey:
         environmentType?.toLowerCase() === 'testing' && !apiKey
           ? SANDBOX_KEY
