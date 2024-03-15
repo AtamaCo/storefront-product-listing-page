@@ -36,7 +36,7 @@ export const validateStoreDetailsKeys = (
       delete (storeDetails as any)[key];
       return;
     }
-    if (key !== 'apiUrl') {
+    if (key !== 'apiUrl' && key !== 'promoTilesDataPath') {
       (storeDetails as any)[key] = sanitizeString((storeDetails as any)[key]);
     }
   });

@@ -10,8 +10,20 @@ it.
 import { createContext } from 'preact';
 import { useContext, useEffect, useMemo, useState } from 'preact/hooks';
 
-import {getCategoryPromoTiles,getProductSearch, refineProductSearch} from '../api/search';
-import {Facet, FacetFilter, PageSizeOption, Product, ProductSearchQuery, PromoTileResponse,RedirectRouteFunc} from '../types/interface';
+import {
+  getCategoryPromoTiles,
+  getProductSearch,
+  refineProductSearch,
+} from '../api/search';
+import {
+  Facet,
+  FacetFilter,
+  PageSizeOption,
+  Product,
+  ProductSearchQuery,
+  PromoTileResponse,
+  RedirectRouteFunc,
+} from '../types/interface';
 import {
   CATEGORY_SORT_DEFAULT,
   DEFAULT_MIN_QUERY_LENGTH,
@@ -259,16 +271,16 @@ const ProductsContextProvider = ({ children }: WithChildrenProps) => {
           categorySearch: !!categoryPath,
         });
 
-        let categoryPromoTiles: PromoTileResponse[] = [];;
-        if (categoryPath && categoryPath.length > 0) {          
+        let categoryPromoTiles: PromoTileResponse[] = [];
+        if (categoryPath && categoryPath.length > 0) {
           categoryPromoTiles = await getCategoryPromoTiles({
             promoTilesDataPath: storeCtx.promoTilesDataPath,
-            categoryPath
+            categoryPath,
           });
           setPromoTiles(categoryPromoTiles);
         }
 
-        setItems(data?.productSearch?.items || []);        
+        setItems(data?.productSearch?.items || []);
         setFacets(data?.productSearch?.facets || []);
         setTotalCount(data?.productSearch?.total_count || 0);
         setTotalPages(data?.productSearch?.page_info?.total_pages || 1);

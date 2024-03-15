@@ -77,7 +77,12 @@ const StoreContextProvider = ({
         customerGroup: context?.customerGroup ?? '',
         userViewHistory: context?.userViewHistory ?? [],
       },
-      apiUrl: environmentType?.toLowerCase() === 'testing' ? TEST_URL : (apiUrl ? apiUrl : API_URL),
+      apiUrl:
+        environmentType?.toLowerCase() === 'testing'
+          ? TEST_URL
+          : apiUrl
+          ? apiUrl
+          : API_URL,
       promoTilesDataPath,
       apiKey:
         environmentType?.toLowerCase() === 'testing' && !apiKey
