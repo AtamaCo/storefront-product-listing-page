@@ -8,31 +8,41 @@ it.
 */
 
 import { FunctionComponent } from 'preact';
-import { ReactNode } from 'preact/compat';
+import { ChangeEvent, ReactNode } from 'preact/compat';
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { FormEvent } from 'react';
+import { getGraphQL } from 'src/api/graphql';
 
 import './OutOfStockForm.css';
 
+import {REGISTER_STOCK_STATUS_UPDATE} from '../../api/queries';
 import { useStore } from '../../context';
 import XIcon from '../../icons/x.svg';
 
 
 export interface OutOfStockFormProps {
   isOpen: boolean;
-  productId: number;
+  productId?: number;
   onClose?: () => void;
-  onSuccess?: () => void;
-  children: ReactNode;
+  onSuccess?: (message: string) => void;
+  apiUrl: string;
+  children?: ReactNode;
 }
 
 interface OutOfStockFormData {
-  email: string;
-  productId: string;
+  email: string;  
+  agree: boolean;
 }
 
+const initialFormState = {  
+  agree: false,
+  email: '',
+}
 
 export const OutOfStockForm: FunctionComponent<OutOfStockFormProps> = ({
   isOpen,
+  productId,
+  apiUrl,
   onClose,
   onSuccess,
   children
@@ -42,8 +52,9 @@ export const OutOfStockForm: FunctionComponent<OutOfStockFormProps> = ({
     config: {  },
   } = useStore();
 
-
   const [isModalOpen, setModalOpen] = useState(isOpen);
+  const [formState, setFormState] = useState<OutOfStockFormData>(initialFormState);
+
   const modalRef = useRef<HTMLDialogElement | null>(null);
 
   const handleCloseModal = () => {
@@ -53,14 +64,23 @@ export const OutOfStockForm: FunctionComponent<OutOfStockFormProps> = ({
     setModalOpen(false);
   };
 
-  const handleSubmitForm = () => {
-    const data: OutOfStockFormData = {
-      email: 'asfdas@asdfasd.com',
-      productId: "123",
+  const handleSubmitForm = async (event: FormEvent): Promise<void> => {
+    
+    event.preventDefault();
+    event.stopPropagation();
+
+    try {
+      const result = await getGraphQL(apiUrl, REGISTER_STOCK_STATUS_UPDATE, {
+        ...formState,
+        productId,
+      });  
+      if (onSuccess) {
+        onSuccess(result?.data?.AmxnotifStockSubscribe?.response_message);
+      }        
+    } catch(error) {
+      // todo - how do we want to handle failures?
     }
 
-    // eslint-disable-next-line no-console
-    console.log(data);
     if (onSuccess) {
       onSuccess();
     }    
@@ -82,6 +102,18 @@ export const OutOfStockForm: FunctionComponent<OutOfStockFormProps> = ({
     }
   }, [isModalOpen]);
 
+  const handleInputChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ): void => {    
+    const { name, value, checked } = event.target;
+    setFormState((prevFormData) => ({
+      ...prevFormData,
+      // sorry for this, it's a lazy way of getting a boolean from the checkec event 
+      [name]: name !== 'agree' ? value : checked,
+    }));
+  };
+
+
 
   return (
        <>       
@@ -92,18 +124,18 @@ export const OutOfStockForm: FunctionComponent<OutOfStockFormProps> = ({
 
       <h3>Me prévenir</h3>
       <p>Saisissez votre e-mail et nous vous enverrons une notification lorsque l’article sera à nouveau disponible</p>
-      <form>        
+      <form onSubmit={handleSubmitForm}>        
         <fieldset>
           <label for="email">
             E-mail
           </label>
-          <input type="email" name="forgot-email" />        
+          <input type="email" onChange={handleInputChange} name="email" />        
         </fieldset>
         <fieldset class="select">          
-          <input type="checkbox" />
+          <input type="checkbox" name="agree" onChange={handleInputChange} />
           <label for="agree">J’accepte que mes données personnelles soient sauvegardées.</label>
         </fieldset>
-        <button onClick={handleSubmitForm}>
+        <button>
         TERMINÉ
         </button>
       </form>

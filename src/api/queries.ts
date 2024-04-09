@@ -211,6 +211,19 @@ const GET_CUSTOMER_CART = `
     }
 `;
 
+const REGISTER_STOCK_STATUS_UPDATE = `
+    mutation StockStatusSubscribe(
+        $productId: Int!
+        $email: String!
+    ) {
+        AmxnotifStockSubscribe(
+            input: { gdpr_agreement: true, email: $email, product_id: $productId }
+        ) {
+            response_message
+        }
+    }
+`;
+
 export {
   ATTRIBUTE_METADATA_QUERY,
   GET_CUSTOMER_CART,
@@ -218,4 +231,5 @@ export {
   QUICK_SEARCH_QUERY,
   REFINE_PRODUCT_QUERY,
   PRODUCT_LABEL_QUERY,
+  REGISTER_STOCK_STATUS_UPDATE,
 };

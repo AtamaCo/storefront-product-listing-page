@@ -17,6 +17,7 @@ import { Alert } from '../../components/Alert';
 import { useProducts, useStore } from '../../context';
 import { Product, PromoTileResponse } from '../../types/interface';
 import { classNames } from '../../utils/dom';
+import OutOfStockForm from '../OutOfStockForm';
 import ProductItem from '../ProductItem';
 import PromoTile from '../PromoTile';
 
@@ -44,11 +45,19 @@ export const ProductList: FunctionComponent<ProductListProps> = ({
   } = productsCtx;
   const [cartUpdated, setCartUpdated] = useState(false);
   const [itemAdded, setItemAdded] = useState('');
+  const [showOutOfStock, setShowOutOfStock] = useState(false);
+  const [outOfStockProductId, setOutOfStockProductId] = useState(0);
   const { viewType } = useProducts();
   const [error, setError] = useState<boolean>(false);
   const {
     config: { listview },
+    apiUrl,    
   } = useStore();
+
+  const outOfStockBehavior = (productId: number) => {    
+    setOutOfStockProductId(productId);
+    setShowOutOfStock(true);
+  }  
 
   const className = showFilters
     ? 'ds-sdk-product-list max-w-full pl-3 pb-2xl sm:pb-24'
@@ -56,12 +65,12 @@ export const ProductList: FunctionComponent<ProductListProps> = ({
 
   useEffect(() => {
     refreshCart && refreshCart();
-  }, [itemAdded]);
+  }, [itemAdded, refreshCart]);
 
   return (
     <div
       className={classNames('ds-sdk-product-list pb-2xl sm:pb-24', className)}
-    >
+    >      
       {cartUpdated && (
         <div className="mt-8">
           <Alert
@@ -143,6 +152,7 @@ export const ProductList: FunctionComponent<ProductListProps> = ({
                   refineProduct={refineProduct}
                   setCartUpdated={setCartUpdated}
                   setItemAdded={setItemAdded}
+                  outOfStockBehavior={outOfStockBehavior}
                   addToCart={addToCart}
                 />
               </Fragment>
@@ -150,6 +160,7 @@ export const ProductList: FunctionComponent<ProductListProps> = ({
           })}
         </div>
       )}
+      <OutOfStockForm isOpen={showOutOfStock} productId={outOfStockProductId} onClose={() => setShowOutOfStock(false)} apiUrl={apiUrl} onSuccess={(message) => alert(message)} />
     </div>
   );
 };

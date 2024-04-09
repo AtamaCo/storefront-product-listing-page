@@ -15,13 +15,13 @@ describe('WidgetSDK - UIKit/OutOfStockForm', () => {
   test('renders', () => {
     const { container } = render(
       <OutOfStockForm
-        onClick={() => {
-          return;
-        }}
-      />
+        apiUrl='https://www'
+        isOpen={true}
+        productId={2}      
+       />
     );
 
-    const elem = container.querySelector('.ds-sdk-add-to-cart-button');
+    const elem = container.querySelector('.ndg-modal-form');
 
     expect(!!elem).toEqual(true);
   });

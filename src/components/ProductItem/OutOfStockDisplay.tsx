@@ -15,18 +15,25 @@ import { Product } from '../../types/interface';
 
 export interface OutOfStockDisplayProps {  
   item: Product;  
+  outOfStockBehavior: (productId: number) => void;
 }
 
 export const OutOfStockDisplay: FunctionComponent<OutOfStockDisplayProps> = ({ 
   item,
+  outOfStockBehavior,
 }: OutOfStockDisplayProps) => {
   const translation = useContext(TranslationContext);
+
+  const handleClick = (event) => {    
+    event.preventDefault();
+    outOfStockBehavior(item.product.id);
+  }
   
   return (
     <>
       <span class="out-of-stock-message text-red-600 text-xl capitalize">{translation.OutOfStockDisplay.outOfStock}</span>                                                                        
       <div class="pb-4">
-        <button data-product-id={item.product.id} class="notify-me flex items-center justify-center text-white text-sm rounded-full h-[32px] w-full p-sm" type="button">{translation.OutOfStockDisplay.notifyMe}</button>      
+        <button data-product-id={item.product.id} class="notify-me flex items-center justify-center text-white text-sm rounded-full h-[32px] w-full p-sm" type="button" onClick={handleClick}>{translation.OutOfStockDisplay.notifyMe}</button>      
       </div>
     </>
   );

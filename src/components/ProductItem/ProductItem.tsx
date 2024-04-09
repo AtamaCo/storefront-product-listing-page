@@ -43,6 +43,7 @@ export interface ProductProps {
   currencyRate?: string;
   setRoute?: RedirectRouteFunc | undefined;
   refineProduct: (optionIds: string[], sku: string) => any;
+  outOfStockBehavior: (productId: number) => void;
   setCartUpdated: (cartUpdated: boolean) => void;
   setItemAdded: (itemAdded: string) => void;
   setError: (error: boolean) => void;
@@ -60,6 +61,7 @@ export const ProductItem: FunctionComponent<ProductProps> = ({
   currencyRate,
   setRoute,
   refineProduct,
+  outOfStockBehavior,
   setError,
   addToCart,
 }: ProductProps) => {
@@ -394,7 +396,7 @@ export const ProductItem: FunctionComponent<ProductProps> = ({
             recentlyAddedToCart={recentlyAddedToCart}
           />
         )}
-      </div></>) : (<OutOfStockDisplay item={refinedProduct ?? item} />)}
+      </div></>) : (<OutOfStockDisplay item={refinedProduct ?? item} outOfStockBehavior={outOfStockBehavior} />)}
     </div>
   );
 };
